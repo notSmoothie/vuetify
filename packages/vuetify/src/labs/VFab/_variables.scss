@@ -1,0 +1,16 @@
+@use 'sass:math';
+@use 'sass:map';
+@use '../../styles/settings';
+@use '../../styles/tools';
+
+$fab-height: 44px !default;
+$fab-font-size: tools.map-deep-get(settings.$typography, 'button', 'size') !default;
+$fab-font-weight: tools.map-deep-get(settings.$typography, 'button', 'weight') !default;
+
+$fab-size-scales: (
+  'x-small': -2,
+  'small': -1,
+  'default': 0,
+  'large': 2,
+  'x-large': 5
+) !default;

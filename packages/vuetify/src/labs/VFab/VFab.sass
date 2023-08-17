@@ -1,0 +1,28 @@
+@use '../../styles/tools'
+@use '../../styles/settings'
+@use 'sass:math'
+@use 'sass:map'
+@use './variables' as *
+@use './mixins' as *
+
+.v-fab
+  display: inline-flex
+
+  .v-btn
+    @include tools.rounded(16px)
+    @include tools.elevation(3)
+
+  &--app
+    display: flex
+    justify-content: flex-end
+    padding: 16px
+    background: pink
+
+
+  &--extended
+    .v-btn
+      min-height: 56px
+      min-width: 80px
+
+  @at-root
+    @include fab-sizes()
