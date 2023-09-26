@@ -64,6 +64,7 @@ The date composable supports the following date formatting options:
 * keyboardDate
 * monthAndDate
 * monthAndYear
+* dayOfMonth
 
 The following example shows how to use the date composable to format a date string:
 
