@@ -259,7 +259,7 @@ describe('VAutocomplete.ts', () => {
       propsData: {
         items: ['foo', 'bar'],
         value: 'foo',
-        chips: true
+        chips: true,
       },
     })
 
@@ -277,7 +277,7 @@ describe('VAutocomplete.ts', () => {
       propsData: {
         items: ['foo', 'bar'],
         value: 'foo',
-        smallChips: true
+        smallChips: true,
       },
     })
 
