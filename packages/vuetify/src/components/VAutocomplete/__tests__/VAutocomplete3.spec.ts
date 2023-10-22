@@ -1,19 +1,15 @@
 // Components
-import VAutocomplete from '../VAutocomplete'
+import VAutocomplete from "../VAutocomplete";
 
 // Utilities
-import {
-  mount,
-  Wrapper,
-  MountOptions,
-} from '@vue/test-utils'
+import { mount, Wrapper, MountOptions } from "@vue/test-utils";
 
-describe('VAutocomplete.ts', () => {
-  type Instance = InstanceType<typeof VAutocomplete>
-  let mountFunction: (options?: MountOptions<Instance>) => Wrapper<Instance>
+describe("VAutocomplete.ts", () => {
+  type Instance = InstanceType<typeof VAutocomplete>;
+  let mountFunction: (options?: MountOptions<Instance>) => Wrapper<Instance>;
 
   beforeEach(() => {
-    document.body.setAttribute('data-app', 'true')
+    document.body.setAttribute("data-app", "true");
 
     mountFunction = (options = {}) => {
       return mount(VAutocomplete, {
@@ -21,272 +17,275 @@ describe('VAutocomplete.ts', () => {
         mocks: {
           $vuetify: {
             lang: {
-              t: (val: string) => val,
+              t: (val: string) => val
             },
             theme: {
-              dark: false,
-            },
-          },
-        },
-      })
-    }
-  })
+              dark: false
+            }
+          }
+        }
+      });
+    };
+  });
 
-  it('should have the correct role', async () => {
-    const wrapper = mountFunction()
+  it("should have the correct role", async () => {
+    const wrapper = mountFunction();
 
-    const inputSlot = wrapper.find('.v-input__slot')
+    const inputSlot = wrapper.find(".v-input__slot");
 
-    expect(inputSlot.element.getAttribute('role')).toBe('combobox')
-  })
+    expect(inputSlot.element.getAttribute("role")).toBe("combobox");
+  });
 
   // https://github.com/vuetifyjs/vuetify/issues/7259
-  it('should update search when same item is selected', async () => {
+  it("should update search when same item is selected", async () => {
     const wrapper = mountFunction({
       attachToDocument: true,
       propsData: {
-        items: ['foo'],
-        value: 'foo',
-      },
-    })
+        items: ["foo"],
+        value: "foo"
+      }
+    });
 
-    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick();
 
-    const input = wrapper.find('input')
-    const element = input.element as HTMLInputElement
+    const input = wrapper.find("input");
+    const element = input.element as HTMLInputElement;
 
-    expect(element.value).toBe('foo')
+    expect(element.value).toBe("foo");
 
-    input.trigger('focus')
-    input.trigger('click')
-    element.value = 'fo'
-    input.trigger('input')
+    input.trigger("focus");
+    input.trigger("click");
+    element.value = "fo";
+    input.trigger("input");
 
-    const item = wrapper.find('.v-list-item')
+    const item = wrapper.find(".v-list-item");
 
-    item.trigger('click')
+    item.trigger("click");
 
-    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick();
 
-    expect(element.value).toBe('foo')
-  })
+    expect(element.value).toBe("foo");
+  });
 
-  it('should copy selected item if multiple', async () => {
+  it("should copy selected item if multiple", async () => {
     const wrapper = mountFunction({
       propsData: {
-        items: ['aaa', 'bbb', 'ccc'],
-        value: ['aaa', 'bbb'],
+        items: ["aaa", "bbb", "ccc"],
+        value: ["aaa", "bbb"],
         chips: true,
-        multiple: true,
-      },
-    })
+        multiple: true
+      }
+    });
 
-    const input = wrapper.find('input')
-    const chip = wrapper.findAll('.v-chip').at(1)
-    const setData = jest.fn()
+    const input = wrapper.find("input");
+    const chip = wrapper.findAll(".v-chip").at(1);
+    const setData = jest.fn();
     const event = {
       clipboardData: {
-        setData,
+        setData
       },
-      preventDefault: jest.fn(),
-    }
+      preventDefault: jest.fn()
+    };
 
-    input.trigger('focus')
-    chip.trigger('click')
-    wrapper.vm.onCopy(event)
+    input.trigger("focus");
+    chip.trigger("click");
+    wrapper.vm.onCopy(event);
 
-    expect(setData).toHaveBeenCalledWith('text/plain', 'bbb')
-    expect(setData).toHaveBeenCalledWith('text/vnd.vuetify.autocomplete.item+plain', 'bbb')
-    expect(event.preventDefault).toHaveBeenCalled()
-  })
+    expect(setData).toHaveBeenCalledWith("text/plain", "bbb");
+    expect(setData).toHaveBeenCalledWith(
+      "text/vnd.vuetify.autocomplete.item+plain",
+      "bbb"
+    );
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
 
-  it('should not copy anything if there is no selected item', async () => {
+  it("should not copy anything if there is no selected item", async () => {
     const wrapper = mountFunction({
       propsData: {
-        items: ['aaa', 'bbb', 'ccc'],
-        value: ['aaa', 'bbb'],
+        items: ["aaa", "bbb", "ccc"],
+        value: ["aaa", "bbb"],
         chips: true,
-        multiple: true,
-      },
-    })
+        multiple: true
+      }
+    });
 
-    const input = wrapper.find('input')
-    const setData = jest.fn()
+    const input = wrapper.find("input");
+    const setData = jest.fn();
     const event = {
       clipboardData: {
-        setData,
+        setData
       },
-      preventDefault: jest.fn(),
-    }
+      preventDefault: jest.fn()
+    };
 
-    input.trigger('focus')
-    wrapper.vm.onCopy(event)
+    input.trigger("focus");
+    wrapper.vm.onCopy(event);
 
-    expect(setData).not.toHaveBeenCalled()
-  })
+    expect(setData).not.toHaveBeenCalled();
+  });
 
   // https://github.com/vuetifyjs/vuetify/issues/9654
   // https://github.com/vuetifyjs/vuetify/issues/11639
-  it('should delete value when pressing backspace', () => {
+  it("should delete value when pressing backspace", () => {
     const wrapper = mountFunction({
       propsData: {
         chips: true,
-        items: ['foo', 'bar', 'fizz', 'buzz'],
-        value: 'foo',
-      },
-    })
+        items: ["foo", "bar", "fizz", "buzz"],
+        value: "foo"
+      }
+    });
 
-    const input = wrapper.find('input')
+    const input = wrapper.find("input");
 
-    input.trigger('focus')
-    input.trigger('keydown.backspace')
-    input.trigger('keydown.backspace')
+    input.trigger("focus");
+    input.trigger("keydown.backspace");
+    input.trigger("keydown.backspace");
 
-    expect(wrapper.vm.internalValue).toBeNull()
+    expect(wrapper.vm.internalValue).toBeNull();
 
     wrapper.setProps({
       multiple: true,
-      value: ['foo', 'bar'],
-    })
+      value: ["foo", "bar"]
+    });
 
-    input.trigger('keydown.backspace')
-    input.trigger('keydown.backspace')
+    input.trigger("keydown.backspace");
+    input.trigger("keydown.backspace");
 
-    expect(wrapper.vm.internalValue).toEqual(['foo'])
-  })
+    expect(wrapper.vm.internalValue).toEqual(["foo"]);
+  });
 
-  it('should not change selectedIndex to 0 when backspace is pressed', () => {
+  it("should not change selectedIndex to 0 when backspace is pressed", () => {
     const wrapper = mountFunction({
       propsData: {
-        items: ['f', 'b'],
-        value: 'f',
-      },
-    })
+        items: ["f", "b"],
+        value: "f"
+      }
+    });
 
-    const input = wrapper.find('input')
+    const input = wrapper.find("input");
 
-    input.trigger('focus')
-    input.trigger('keydown.backspace')
+    input.trigger("focus");
+    input.trigger("keydown.backspace");
 
-    expect(wrapper.vm.selectedIndex).toBe(-1)
-  })
+    expect(wrapper.vm.selectedIndex).toBe(-1);
+  });
 
-  it('should close menu when append icon is clicked', async () => {
+  it("should close menu when append icon is clicked", async () => {
     const wrapper = mountFunction({
       propsData: {
-        items: ['foo', 'bar'],
-      },
-    })
+        items: ["foo", "bar"]
+      }
+    });
 
-    const append = wrapper.find('.v-input__append-inner')
-    const slot = wrapper.find('.v-input__slot')
-    slot.trigger('click')
-    expect(wrapper.vm.isMenuActive).toBe(true)
-    append.trigger('mousedown')
-    append.trigger('mouseup')
-    append.trigger('click')
-    await wrapper.vm.$nextTick()
-    expect(wrapper.vm.isMenuActive).toBe(false)
-  })
+    const append = wrapper.find(".v-input__append-inner");
+    const slot = wrapper.find(".v-input__slot");
+    slot.trigger("click");
+    expect(wrapper.vm.isMenuActive).toBe(true);
+    append.trigger("mousedown");
+    append.trigger("mouseup");
+    append.trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.isMenuActive).toBe(false);
+  });
 
-  it('should open menu when append icon is clicked', async () => {
+  it("should open menu when append icon is clicked", async () => {
     const wrapper = mountFunction({
       propsData: {
-        items: ['foo', 'bar'],
-      },
-    })
+        items: ["foo", "bar"]
+      }
+    });
 
-    const append = wrapper.find('.v-input__append-inner')
+    const append = wrapper.find(".v-input__append-inner");
 
-    append.trigger('mousedown')
-    append.trigger('mouseup')
-    append.trigger('click')
-    await wrapper.vm.$nextTick()
-    expect(wrapper.vm.isMenuActive).toBe(true)
-  })
+    append.trigger("mousedown");
+    append.trigger("mouseup");
+    append.trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.isMenuActive).toBe(true);
+  });
 
   // https://github.com/vuetifyjs/vuetify/issues/9489
-  it('should emit search-input update only once', async () => {
-    const onSearch = jest.fn()
+  it("should emit search-input update only once", async () => {
+    const onSearch = jest.fn();
     const wrapper = mountFunction({
       propsData: {
-        items: ['foo', 'bar'],
-        value: 'foo',
-      },
-    })
+        items: ["foo", "bar"],
+        value: "foo"
+      }
+    });
 
-    wrapper.vm.$on('update:search-input', onSearch)
+    wrapper.vm.$on("update:search-input", onSearch);
 
-    expect(onSearch).toHaveBeenCalledTimes(0)
+    expect(onSearch).toHaveBeenCalledTimes(0);
 
-    wrapper.setData({ internalValue: 'bar' })
+    wrapper.setData({ internalValue: "bar" });
 
-    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick();
 
-    expect(onSearch).toHaveBeenCalledTimes(1)
+    expect(onSearch).toHaveBeenCalledTimes(1);
 
-    wrapper.setData({ internalValue: 'foo' })
+    wrapper.setData({ internalValue: "foo" });
 
-    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick();
 
-    expect(onSearch).toHaveBeenCalledTimes(2)
+    expect(onSearch).toHaveBeenCalledTimes(2);
 
-    wrapper.setData({ internalValue: 'foo' })
+    wrapper.setData({ internalValue: "foo" });
 
-    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick();
 
-    expect(onSearch).toHaveBeenCalledTimes(2)
-  })
+    expect(onSearch).toHaveBeenCalledTimes(2);
+  });
 
-  it('should reset selected item when text-field is cleared if not multiple', () => {
+  it("should reset selected item when text-field is cleared if not multiple", () => {
     const wrapper = mountFunction({
       propsData: {
-        items: ['foo', 'bar'],
-        value: 'foo',
-      },
-    })
+        items: ["foo", "bar"],
+        value: "foo"
+      }
+    });
 
-    const input = wrapper.find('input')
+    const input = wrapper.find("input");
 
-    input.element.value = ''
-    input.trigger('input')
+    input.element.value = "";
+    input.trigger("input");
 
-    expect(wrapper.vm.internalValue).toBeNull()
-  })
+    expect(wrapper.vm.internalValue).toBeNull();
+  });
 
-  it('should not remove selected item when text-field is cleared but chips prop is set', () => {
+  it("should not remove selected item when text-field is cleared but chips prop is set", () => {
     const wrapper = mountFunction({
       propsData: {
-        items: ['foo', 'bar'],
-        value: 'foo',
-        chips: true,
-      },
-    })
+        items: ["foo", "bar"],
+        value: "foo",
+        chips: true
+      }
+    });
 
-    const input = wrapper.find('input')
+    const input = wrapper.find("input");
 
-    input.element.value = ''
-    input.trigger('input')
+    input.element.value = undefined;
+    input.trigger("input");
 
-    expect(wrapper.vm.internalValue).not.toBeNull()
-    expect(wrapper.vm.internalValue).toBe('foo')
-  })
+    expect(wrapper.vm.internalValue).not.toBeNull();
+    expect(wrapper.vm.internalValue).toBe("foo");
+  });
 
-  it('should not remove selected item when text-field is cleared but small-chips prop is set', () => {
+  it("should not remove selected item when text-field is cleared but small-chips prop is set", () => {
     const wrapper = mountFunction({
       propsData: {
-        items: ['foo', 'bar'],
-        value: 'foo',
-        smallChips: true,
-      },
-    })
+        items: ["foo", "bar"],
+        value: "foo",
+        smallChips: true
+      }
+    });
 
-    const input = wrapper.find('input')
+    const input = wrapper.find("input");
 
-    input.element.value = ''
-    input.trigger('input')
+    input.element.value = "";
+    input.trigger("input");
 
-    expect(wrapper.vm.internalValue).not.toBeNull()
-    expect(wrapper.vm.internalValue).toBe('foo')
-  })
-})
+    expect(wrapper.vm.internalValue).not.toBeNull();
+    expect(wrapper.vm.internalValue).toBe("foo");
+  });
+});
